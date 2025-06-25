@@ -1,0 +1,28 @@
+services:
+  ubuntu:
+    container_name: mailer-ubuntu-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true # Required for Docker-in-Docker
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./:/var/www/html
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - lion
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailer-ubuntu-mailhog
+    restart: unless-stopped
+    ports:
+        - "8025:8025"
+        - "1025:1025"
+    networks:
+        - lion
+
+networks:
+  lion:
+    driver: bridge
